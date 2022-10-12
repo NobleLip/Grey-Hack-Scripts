@@ -22,6 +22,6 @@ This script only provides the information of whois in a better way.\
 You can see in the image both Grey Hack whois script and my whois script
 <br/><br/>
 
-![image](whois/whois.PNG)
+![image](whois/newwhois.PNG)
 
 ### Next

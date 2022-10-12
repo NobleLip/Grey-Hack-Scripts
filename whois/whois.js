@@ -8,8 +8,12 @@ EditInfo = function(info)
 end function
 
 Pretify = function(info)
+	Spaces = [11,0,9,17]
+	index = 0
 	for i in info
-		print("<b>	"+i[0]+" : [<color=#68FF00>"+i[1][1:-1]+"</color>]</b>")
+		S = (" "*(Spaces[index]))
+		print("<b>	" + i[0] +" : "+ S +"[<color=#68FF00>"+i[1][1:-1]+"</color>]</b>")
+		index = index + 1
 	end for
 end function
 
@@ -20,5 +24,4 @@ else
 	address = params[0]
 	info = EditInfo(whois(address))
 	Pretify(info)
-	
 end if
