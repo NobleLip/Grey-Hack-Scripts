@@ -37,7 +37,7 @@ To get the right packets, I used this table:
 At first, I thought about using this table and use polynomial interpolation using the Newton method to find the right equation to calculate the perfect value of packets, until I realize that all I have to do is:
 
 $$
-\huge Packets = \frac{30 000}{X\%}
+\huge Packets = \frac{300 000}{Signal\ Power}
 $$
 
 It's as simple as that.
