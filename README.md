@@ -29,15 +29,15 @@ You can see in the image both the Grey Hack whois script and my whois script
 
 ### connect
 
-This script will pick the best network available. After that, it will run aireplay, with the best network and the right packets. \
-To get the right packets, I used this table:
+This script will pick the best network available. After that, it will run aireplay, with the best network and the ACKs that we input. \
+To get the right ACKs, I used this table:
 
 ![image](connect/PacketsInf.png)
 
-At first, I thought about using this table and use polynomial interpolation using the Newton method to find the right equation to calculate the perfect value of packets, until I realize that all I have to do is:
+At first, I thought about using polynomial interpolation and use the Newton method to find the right equation to calculate the perfect value of packets, until I realize that all I have to do is:
 
 $$
-\huge Packets = \frac{300 000}{Signal\ Power}
+\huge ACKs = \frac{300 000}{Signal\ Power}
 $$
 
 It's as simple as that.
