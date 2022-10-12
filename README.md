@@ -1,4 +1,5 @@
 #Noble Scripts
+
 ## Feel free to use any of my scripts to make your game better!
 
 Hi! I'm Noble. Feel free to contact me in order to get scripts that I cannot make public!
@@ -29,14 +30,14 @@ You can see in the image both the Grey Hack whois script and my whois script
 ### connect
 
 This script will pick the best network available. After that, it will run aireplay, with the best network and the right packets. \
-To din the right packets, I used this table:
+To get the right packets, I used this table:
 
 ![image](connect/PacketsInf.png)
 
 At first, I thought about using this table and use polynomial interpolation using the Newton method to find the right equation to calculate the perfect value of packets, until I realize that all I have to do is:
 
 $$
-Packets = \frac{30 000}{X\%}
+\huge Packets = \frac{30 000}{X\%}
 $$
 
 It's as simple as that.
