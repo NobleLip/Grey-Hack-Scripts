@@ -36,7 +36,7 @@ To din the right packets, I used this table:
 At first, I thought about using this table and use polynomial interpolation using the Newton method to find the right equation to calculate the perfect value of packets, until I realize that all I have to do is:
 
 $$
-Packets = {300 000 \over X\% }
+Packets = \frac{30 000}{X\%}
 $$
 
 It's as simple as that.
