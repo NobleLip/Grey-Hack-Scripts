@@ -16,6 +16,7 @@ I will categorize the game scripts in 2:
 | ------- | ------------------ | ---------------------- |
 | whois   | :x:                | :heavy_check_mark:     |
 | connect | :heavy_check_mark: | :x:                    |
+| HALL    | :heavy_check_mark: | :x:                    |
 
 <br/>
 
@@ -45,3 +46,7 @@ It's as simple as that.
 Once aireplay is done, it will use the file.cap , decipher the password and connect to the wifi, deleting the file.cap and closing the script!
 
 ![image](connect/Result.PNG)
+
+
+
+## HALL (Hack All)
