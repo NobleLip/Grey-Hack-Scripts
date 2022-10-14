@@ -20,7 +20,7 @@ Hi! I'm Noble. Feel free to contact me in order to get scripts that I cannot mak
 
 I will categorize the game scripts in 2:
 
-- Usefull : **What you will use to hack and monitor your servers**
+- Usefull : **What you will use to hack others and monitor your servers**
 - Better Game Experience : **Provide the game information in a better way**
   <br/><br/>
 
