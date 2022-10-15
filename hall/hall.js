@@ -18,7 +18,6 @@ else
 end if
 if ports == null then exit("<b>[<color=#FF005C>-</color>] IP Address not Found")
 if typeof(ports) == "string" then exit(ports)
-if(ports.len == 0) then exit("<b>[<color=#FF005C>-</color>] No open ports!")
 //Function to correct info
 InfoOrg = function(info)
 	NewInfo = []
@@ -33,16 +32,18 @@ end function
 info = "<b>OPT PORT STATE SERVICE VERSION LAN "+char(10)
 info = info + "<b>"+"0"+ " "+"0"+ " " + "open"+ " " + "kernel_router "+router.kernel_version + " " + router.port_info + "192.168.0.1"+char(10)  
 Opt = 1
-for port in ports
-   service_info = router.port_info(port)
-   lan_ips = port.get_lan_ip
-   port_status = "open"
-   if(port.is_closed and not isLan) then
-      port_status = "closed"
-   end if
-   info = info + "<b>"+ Opt+ " "+port.port_number + " " + port_status+ " " + service_info + " " + lan_ips+" "+char(10)
-	Opt = Opt + 1
-end for
+if ports.len > 0 then
+	for port in ports
+   		service_info = router.port_info(port)
+  		lan_ips = port.get_lan_ip
+   		port_status = "open"
+   		if(port.is_closed and not isLan) then
+      		port_status = "closed"
+   		end if
+   		info = info + "<b>"+ Opt+ " "+port.port_number + " " + port_status+ " " + service_info + " " + lan_ips+" "+char(10)
+		Opt = Opt + 1
+	end for
+end if
 print(format_columns(info))
 info = InfoOrg(info)
 Opt = " "
@@ -60,22 +61,29 @@ net_session = metaxploit.net_use(params[0], info[Opt][1].to_int)
 if not net_session then exit("<b>[<color=#FF005C>-</color>] Error: can't connect to net session")
 metaLib = net_session.dump_lib
 //Search for Memory Vurnerabilitys
-print("<b>[<color=#68FF00>+</color>] IP :<color=#68FF00> "+params[0]+"</color> PORT :<color=#68FF00> "+port+"</color>")
+print("<b>[<color=#68FF00>+</color>] IP :<color=#68FF00> "+params[0]+"</color> PORT :<color=#68FF00> "+info[Opt][1].to_int+"</color>")
 print("    <b>[<color=#68FF00>+</color>] Library :<color=#68FF00> "+info[Opt][3]+"</color> Version :<color=#68FF00> "+info[Opt][4]+"</color>\n")
 print("<b>[<color=#FAFF00>!</color>] Exploring the Memory for Vulnerabilities...")
 MemoryAdd = metaxploit.scan(metaLib)
-Vulnera = []
+//Scan Address, Get Names and vulnerability results
+OverFlowResults = {}
 for address in MemoryAdd
-	Vulnera = Vulnera + [metaxploit.scan_address(metaLib, address)]
-end for
-AllInf = [[""]] 
-for Vul in Vulnera
-	for i in Vul.split("\n\n")
-		AllInf = AllInf + [i.split("\n")]
+	TotalResultAddress = {}
+	for exname in metaxploit.scan_address(metaLib, address).split("\n")
+		if exname.indexOf("Unsafe") >= 0 then
+			NamesVul = exname[exname.indexOf("<b>")+3:exname.indexOf("</b>")]
+			ResultVul = metaLib.overflow(address, NamesVul)
+			TotalResultAddress[NamesVul] = typeof(ResultVul)
+		end if
 	end for
+	OverFlowResults[address] = TotalResultAddress
 end for
-AllInf.pop
-for i in range(0, AllInf.len)
-	print(i)
-end for
-
+//Function to print and pick all the vulnerabilitys
+PrintVul = function(ip,port,lib,vers,info)
+	clear_screen
+	print("<b>[<color=#68FF00>+</color>] IP :<color=#68FF00> "+ip+"</color> PORT :<color=#68FF00> "+port+"</color>")
+	print("    <b>[<color=#68FF00>+</color>] Library :<color=#68FF00> "+lib+"</color> Version :<color=#68FF00> "+vers+"</color>\n")
+	
+end function
+//Loop to validate 
+PrintVul(params[0], info[Opt][1].to_int, info[Opt][3], info[Opt][4], OverFlowResults)
