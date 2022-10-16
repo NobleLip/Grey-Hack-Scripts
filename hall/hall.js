@@ -47,7 +47,7 @@ end if
 print(format_columns(info))
 info = InfoOrg(info)
 Opt = " "
-while((typeof(Opt)!="number") or (Opt < 0) or (Opt > (info.len-1)))
+while((typeof(Opt)!="number") or (Opt < 0) or (Opt > (info.len-2)))
 	Opt = user_input("<b>[<color=#FAFF00>!</color>] Pick the Option : ").to_int
 end while
 clear_screen
@@ -83,7 +83,124 @@ PrintVul = function(ip,port,lib,vers,info)
 	clear_screen
 	print("<b>[<color=#68FF00>+</color>] IP :<color=#68FF00> "+ip+"</color> PORT :<color=#68FF00> "+port+"</color>")
 	print("    <b>[<color=#68FF00>+</color>] Library :<color=#68FF00> "+lib+"</color> Version :<color=#68FF00> "+vers+"</color>\n")
-	
+	Choose = [0,0]
+	for address in info
+		print("<b>(<color=#68FF00>"+Choose[0]+"</color>)[<color=#68FF00>+</color>] Address: <color=#68FF00>"+address["key"]+"</color> Vulnerabilitys:")
+		Choose[1] = 0
+		for vulnerability in address["value"]
+			if vulnerability["value"] != "null" then
+				AddRes = " [<color=#13F4EF>V</color>] <color=#13F4EF>"+vulnerability["value"]+"</color>"
+			else
+				AddRes = " [<color=#FF005C>X</color>] <color=#FF005C>Failed </color>"
+			end if 
+			print("		<b>(<color=#FAFF00>"+Choose[1]+"</color>)[<color=#FAFF00>!</color>] <color=#FAFF00>"+vulnerability["key"]+"</color>" + AddRes)
+			Choose[1] = Choose[1] + 1 
+		end for
+		Choose[0] = Choose[0] + 1
+	end for
 end function
-//Loop to validate 
-PrintVul(params[0], info[Opt][1].to_int, info[Opt][3], info[Opt][4], OverFlowResults)
+//Pick Vulnerability 
+PickVul = function(info)
+	print("\n\n<b>       ADDRESS VULNERABILITY ACTION (0=No,1=Yes)")
+	ChooseVul = []
+	while ChooseVul.len != 3
+		ChooseVul = user_input("<b>OPTION : ").split(" ")
+	end while
+	ChooseAddName = ["","","",ChooseVul[2]]
+	//If the action is diferent from yes or no
+	if ChooseVul[2] > 1 or ChooseVul[2] < 0 then
+		return null
+	end if
+	Choose = [0,0]
+	for address in info
+		Choose[1] = 0
+		for vulnerability in address["value"]
+			if (ChooseVul[0] == Choose[0]) and (ChooseVul[1] == Choose[1]) then
+				ChooseAddName[0] = address["key"]
+				ChooseAddName[1] = vulnerability["key"]
+				ChooseAddName[2] = vulnerability["value"]
+				return ChooseAddName
+			end if
+			Choose[1] = Choose[1] + 1 
+		end for
+		Choose[0] = Choose[0] + 1
+	end for
+	//If no condition is true
+	return null
+end function
+//Function Computer get mail
+ComputerTxtFiles = function(overflowresult)
+	if overflowresult.File("/etc/passwd").get_content != null then
+		print("<b>[<color=#68FF00>+</color>] Passwd ")
+		print(overflowresult.File("/etc/passwd").get_content)
+	for user in overflowresult.File("/home").get_folders
+		for mail in overflowresult.File("/home/"+user.name+"/Config").get_files
+			if mail.name == "Mail.txt" then
+				print("<b>[<color=#68FF00>+</color>] Mail.txt ")
+				print(mail.get_content)
+			end if
+		end for
+	end for
+end function
+//Function to Get Mail, Bank and pswd file
+GetTxtFiles = function(overflowresult)
+	//Get Passwd Content
+	while overflowresult.path != "/"
+		overflowresult = overflowresult.parent
+	end while 
+	folders = overflowresult.get_folders
+	for folder in folders
+		if folder == "/etc" then
+			files = folder.get_files
+			for file in files
+				if file.name == "passwd" then
+					print("<b>[<color=#68FF00>+</color>] Passwd \n" + file.get_content)
+				end if
+			end for
+		end if
+	end for
+	//Get Mail.txt Content
+	while overflowresult.path != "/"
+		overflowresult = overflowresult.parent
+	end while 
+	folders = overflowresult.get_folders
+	for folder in folders
+		if folder == "/home" then
+			users = folder.get_folders
+			for user in users
+				for config in user.get_folders
+					if config.name == "Config" then
+						for mail in config
+							if mail.name == "Mail.txt" then
+								print("<b>[<color=#68FF00>+</color>] Mail.txt\n" + mail.get_content)
+							end if
+						end for
+					end if
+				end for
+			end for
+		end if
+	end for
+	print("<b>[<color=#68FF00>+</color>] Done Exploring Files!\n")
+end function
+//Loop to validate
+while (1)
+	PrintVul(params[0], info[Opt][1].to_int, info[Opt][3], info[Opt][4], OverFlowResults)
+	RunVulnerability = PickVul(OverFlowResults)
+	//Run Number Vulnerability
+	if RunVulnerability[2] == "number" and RunVulnerability[3].to_int then
+		metaLib.overflow(RunVulnerability[0], RunVulnerability[1], "root")
+	end if
+	//Run shell vulnerability
+	if RunVulnerability[2] == "shell" and RunVulnerability[3].to_int then
+		metaLib.overflow(RunVulnerability[0], RunVulnerability[1]).start_terminal
+	end if
+	//Run File Vulnerability
+	if RunVulnerability[2] == "file" and RunVulnerability[3].to_int then
+		GetTxtFiles(metaLib.overflow(RunVulnerability[0], RunVulnerability[1]))
+	end if
+	//Run Computer Vulnerability
+	if RunVulnerability[2] == "computer" and RunVulnerability[3].to_int then
+		ComputerTxtFiles(metaLib.overflow(RunVulnerability[0], RunVulnerability[1]))
+	end if
+	user_input()
+end while
