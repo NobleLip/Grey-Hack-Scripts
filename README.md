@@ -1,5 +1,4 @@
 ```
-
   _____                       _    _            _           _____           _       _       
  / ____|                     | |  | |          | |         / ____|         (_)     | |      
 | |  __ _ __ ___ _   _ ______| |__| | __ _  ___| | _______| (___   ___ _ __ _ _ __ | |_ ___ 
@@ -24,11 +23,14 @@ I will categorize the game scripts in 2:
 - Better Game Experience : **Provide the game information in a better way**
   <br/><br/>
 
-|         | Usefull            | Better Game Experience |
-| ------- | ------------------ | ---------------------- |
-| whois   | :x:                | :heavy_check_mark:     |
-| connect | :heavy_check_mark: | :x:                    |
-| HALL    | :heavy_check_mark: | :x:                    |
+|          | Usefull            | Better Game Experience |
+| -------- | ------------------ | ---------------------- |
+| whois    | :x:                | :heavy_check_mark:     |
+| connect  | :heavy_check_mark: | :x:                    |
+| decipher | :heavy_check_mark: | :x:                    |
+| LogW     | :heavy_check_mark: | :x:                    |
+| libinf   | :heavy_check_mark: | :x:                    |
+| hall     | :heavy_check_mark: | :x:                    |
 
 <br/>
 
@@ -59,6 +61,16 @@ Once aireplay is done, it will use the file.cap , decipher the password and conn
 
 ![image](connect/Result.PNG)
 
+## decipher
 
+This is a better decipher tool , you can pass both a file or copy paste the contents of the Mail,Bank and passwd files to decipher the password needed
 
-## HALL (Hack All)
+- decipher -f NameFile
+- decipher rweerqwr:123jk1213h123jh1231jh31
+
+## LogW
+
+This script deletes your logs every X defined seconds, to ensure that no one will catch your IP in the server that you are hacking from.
+**Warning , This Script Only Works With Sudo** 
+
+- LogW 10 

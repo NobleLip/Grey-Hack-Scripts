@@ -104,7 +104,8 @@ PickVul = function(info)
 	print("\n\n<b>       ADDRESS VULNERABILITY ACTION (0=No,1=Yes)")
 	ChooseVul = []
 	while ChooseVul.len != 3
-		ChooseVul = user_input("<b>OPTION : ").split(" ")
+		ChooseVul = user_input("<b>OPTION : ")
+		ChooseVul = ChooseVul.split(" ")
 	end while
 	ChooseAddName = ["","","",ChooseVul[2]]
 	//If the action is diferent from yes or no
@@ -115,7 +116,7 @@ PickVul = function(info)
 	for address in info
 		Choose[1] = 0
 		for vulnerability in address["value"]
-			if (ChooseVul[0] == Choose[0]) and (ChooseVul[1] == Choose[1]) then
+			if (ChooseVul[0].to_int == Choose[0]) and (ChooseVul[1].to_int == Choose[1]) then
 				ChooseAddName[0] = address["key"]
 				ChooseAddName[1] = vulnerability["key"]
 				ChooseAddName[2] = vulnerability["value"]
@@ -186,6 +187,7 @@ end function
 while (1)
 	PrintVul(params[0], info[Opt][1].to_int, info[Opt][3], info[Opt][4], OverFlowResults)
 	RunVulnerability = PickVul(OverFlowResults)
+	print(RunVulnerability)
 	//Run Number Vulnerability
 	if RunVulnerability[2] == "number" and RunVulnerability[3].to_int then
 		metaLib.overflow(RunVulnerability[0], RunVulnerability[1], "root")

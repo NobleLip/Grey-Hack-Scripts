@@ -1,0 +1,134 @@
+if params.len != 2 or params[0] == "-h" or params[0] == "--help" then exit("<b>Usage: "+program_path.split("/")[-1]+" [ip_address] [port]</b>")
+metaxploit = include_lib("/lib/metaxploit.so")
+if not metaxploit then
+    metaxploit = include_lib(current_path + "/metaxploit.so")
+end if
+if not metaxploit then exit("Error: Can't find metaxploit library in the /lib path or the current folder")
+address = params[0]
+port = params[1].to_int
+net_session = metaxploit.net_use( address, port )
+if not net_session then exit("Error: can't connect to net session")
+metaLib = net_session.dump_lib
+
+lis = metaxploit.scan(metaLib)
+lis1 = []
+names=[]
+res = []
+
+for i in lis
+	lis1 = lis1 + [metaxploit.scan_address(metaLib,i)]
+end for
+
+for i in lis1
+	sover = i.split(".")
+	ToAdd = []
+	for j in sover
+		if j.indexOf("Unsafe") >= 0 then 
+			ToAdd = ToAdd + [j[j.indexOf("<b>")+3:-4]] 
+		end if
+	end for
+	names = names + [ToAdd]
+end for
+//Get overflow Results
+for numlis in range(0,lis.len-1)
+	resadd = []
+	for numnames in range(0,names[numlis].len-1)
+		result = metaLib.overflow(lis[numlis], names[numlis][numnames])
+		if result == null then
+			resadd = resadd + [0]
+		else 
+			resadd = resadd + [typeof(result)]
+		end if
+	end for
+res = res + [resadd]
+end for
+//Print ovrflow results
+clear_screen
+print("<color=#68FF00>[+] IP : "+address+" PORT : "+port+"</color>\n\n")
+for numlis in range(0,lis.len-1)
+	print("<color=#68FF00>("+numlis+")[+]</color> Vulnerability Address: <color=#68FF00>"+lis[numlis]+"</color> Vulnerabilitys:")
+	for numnames in range(0,names[numlis].len-1)
+		if(res[numlis][numnames] != 0) then AddRes = "<color=#13F4EF>  [V] "+res[numlis][numnames]+"</color>" else AddRes = "<color=#FF005C>  [X] Failed </color>"  end if
+		print("		<color=#FAFF00>("+numnames+")[!]"+names[numlis][numnames]+"</color>" + AddRes)
+	end for
+end for
+
+AccessPasswdFile = function(result)
+	files = result.get_files
+	for file in files
+		if file.name == "passwd" then
+			print("<color=#68FF00>[+] passwd </color>\n" + file.get_content)
+		end if
+	end for
+end function
+
+AccessMailFile = function(result)
+	folders = result.get_folders
+	for folder in folders
+		for config in folder.get_folders
+			if config.name == "Config" then
+				for mail in config.get_files
+					if mail.name == "Mail.txt" then
+						print("<color=#68FF00>[+] Mail.txt </color>\n" + mail.get_content)
+					end if
+				end for
+			end if
+		end for 
+	end for
+end function
+
+
+
+while true
+	chooseOpA = user_input("Choose Address:").to_int
+	chooseOpV = user_input("Choose Vulnerability:").to_int
+	start = user_input("Start? 0 - No, 1 - Yes").to_int
+
+	//If i can change password do this first
+	if typeof(result) == "number" and start then
+		result = metaLib.overflow(lis[chooseOpA], names[chooseOpA][chooseOpV], "root")
+		result = metaLib.overflow(lis[chooseOpA], names[chooseOpA][chooseOpV], "root")
+	end if
+	
+	//For the rest of Vultnera
+	
+	if typeof(result) == "shell" and start then
+		result.start_terminal
+	end if
+	
+	if typeof(result) == "file" and start then
+		if result.path == "/etc" then
+			AccessPasswdFile(result)
+		else 
+			print("<color=#FAFF00>[!] Attempting to reach /etc folder </color>")
+			while result.path != "/"
+				result = result.parent
+			end while
+			folders = result.get_folders
+			for folder in folders
+				if folder.path == "/etc" then
+					AccessPasswdFile(folder)
+				end if
+			end for
+		end if
+
+		if result.path == "/home" then
+			AccessPasswdFile(result)
+		else 
+			print("<color=#FAFF00>[!] Attempting to reach /home folder </color>")
+			while result.path != "/"
+				result = result.parent
+			end while
+			folders = result.get_folders
+			for folder in folders
+				if folder.path == "/home" then
+					AccessMailFile(folder)
+				end if
+			end for
+		end if
+	end if 
+		
+
+end while
+
+

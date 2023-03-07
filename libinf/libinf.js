@@ -52,9 +52,9 @@ ScanLib = function(libs)
 	print("<b>[<color=#FAFF00>!</color>] Scanned Vulnerabilitys: ")
 	for lib in LibInfo
 		print("<b>[<color=#FAFF00>!</color>] Lib : "+ lib["key"])
-		print("<b>		[<color=#FAFF00>!</color>] Vulnerable Address : <color=#FAFF00>"+ lib["value"][0]+"</color>")
-		print("<b>		[<color=#FAFF00>!</color>] Soft Vulnerabilitys : <color=#FAFF00>"+ lib["value"][1][0]+"</color>")
-		print("<b>		[<color=#FF005C>-</color>] Dangerous Vulnerabilitys : <color=#FF005C>"+ lib["value"][1][1]+"</color>")
+		print("<b>		[<color=#FAFF00>!</color>] Vulnerable Address : <color=#FAFF00>"+ lib["values"][0]+"</color>")
+		print("<b>		[<color=#FAFF00>!</color>] Soft Vulnerabilitys : <color=#FF005C>"+ lib["values"][1][0]+"</color>")
+		print("<b>		[<color=#FF005C>-</color>] Dangerous Vulnerabilitys : <color=#FF005C>"+ lib["values"][1][1]+"</color>")
 	end for
 end function
 //Scan or exit

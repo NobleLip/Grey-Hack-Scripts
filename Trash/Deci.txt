@@ -1,0 +1,21 @@
+if params.len != 1 or params[0] == "-h" or params[0] == "--help" then exit("<b>Usage: "+program_path.split("/")[-1]+" user:encripted </b>")
+metaxploit = include_lib("/lib/metaxploit.so")
+
+decimessage = params[0]
+
+cryptools = include_lib("/lib/crypto.so")
+if not cryptools then
+	cryptools = include_lib(current_path + "/crypto.so")
+end if
+if not cryptools then exit("Error: Can't find crypto.so library in the /lib path or the current folder")
+
+
+GetPassword = function(userPass)
+	if userPass.len != 1 then exit("decipher: wrong syntax")
+	password = cryptools.decipher(userPass[0])
+	return password
+end function
+
+print("			<color=#68FF00>[+] "+GetPassword([params[0]])+"</color>")
+
+
