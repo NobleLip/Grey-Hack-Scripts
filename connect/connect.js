@@ -18,6 +18,7 @@ end for
 print("<b>[<color=#68FF00>+</color>] Best Wifi :\n<b>     [<color=#68FF00>+</color>] BSSID : <color=#68FF00>"+ToConnect[0]+"\n<b>     [<color=#68FF00>+</color>] Power : <color=#68FF00>"+ToConnect[1]+"\n<b>     [<color=#68FF00>+</color>] ESSID : <color=#68FF00>"+ToConnect[2])
 //Perform aireplay
 print("<b>[<color=#FAFF00>!</color>]Performing Aireplay...")
+print("<b>[<color=#FAFF00>!</color>]"+(300000/ToConnect[1][0:-1].to_int)+" ACK's Needed...")
 cryptools.aireplay(ToConnect[0],ToConnect[2], (300000/ToConnect[1][0:-1].to_int))
 print("<b>[<color=#68FF00>+</color>]<color=#68FF00> Sucess</color> - Aireplay recorded on file.cap")
 //Perform aircrack and delete file.cap
